@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block content %}
+{% with messages = get_flashed_messages(with_categories = True) %}
+{% if messages %}
+{% for cat, msg in messages %}
+{% if cat == 'auth-success' %}
+<div class="container">
+    {{ msg }}
+    <button type="button" class="close" data-dismiss="alert" , onlick="this.parentElement.style.display='none'">&times;
+    </button>
+</div>
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endwith %}
+<header class="hero-section">
+    <h3 class="header-text">Welcome to Marvel Hero Generator, {{ current_user.email }}</h3>
+    <main class="container">
+        <div class="row">
+            <aside class="col-12 col-mn-6">
+                <h2>Find a Hero!</h2>
+                {% include 'hero_form.html' %}
+            </aside>
+        </div>
+    </main>
+</header>
+<div class="container">
+    <h3>Here are your profile details:</h3>
+    <li class="list-group-item">Email: {{ current_user.email }}</li>
+    <li class="list-group-item">Token: {{ current_user.token }}</li>
+    <div class="row">
+        {% for hero in heroes %}
+        <div class="col-3">
+            <div class="card" style="width: 18rem;">
+                <img class="card-img-top" src="{{ hero.img_head }}" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">{{ hero.name }}</h5>
+                    <p class="card-text">{{ hero.description }} </p>
+                    <p>{{ hero.comics }}</p>
+                    <p>{{ hero.date_created }}</p>
+                </div>
+            </div>
+
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock content %}
