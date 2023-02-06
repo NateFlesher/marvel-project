@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from marvel_inventory.helpers import token_required
+from marvel_inventory.helpers import token_required, APIMarvel
 from marvel_inventory.models import db, Hero, hero_schema, heroes_schema
 
 api = Blueprint('api', __name__, url_prefix = '/api')
@@ -12,6 +12,25 @@ def getdata(our_user):
 
 
 #Generate Hero endpoint
+
+@api.route('/heroes', methods = ['POST'])
+@token_required
+def generate_heroes(our_user):
+    hero_name = request.json['name']
+    x = APIMarvel(hero_name)
+    for i in x:
+        name = i["name"]
+        description = i["description"]
+        comics = i["id"]
+        img_head = i["thumbnail"]["path"] + "." +  i["thumbnail"]["extension"]
+        user_token = our_user.token
+
+        hero = Hero(name, description, comics, img_head, user_token)
+
+        db.session.add(hero)
+        db.session.commit()
+    response = hero_schema.dump(hero)
+    return jsonify(response)
 
 
 
